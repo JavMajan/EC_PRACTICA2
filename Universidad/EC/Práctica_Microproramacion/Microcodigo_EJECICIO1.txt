@@ -1,0 +1,145 @@
+begin {
+
+fetch:	(T2=1, C0=1),
+		(TA=1, R=1, BW=11, M1=1, C1=1),
+		(M2=1, C2=1, T1=1, C3=1),
+		(A0=1, B=0, C=0)
+}
+
+ld Rdest Rorig {
+	co=010000,
+	nwords=1,
+	Rdest = reg(25,21),
+	Rorig = reg(20,16),
+	{
+		(SELA=10000, T9, SELC=10101, LC, A0=1, B=1, C=0)
+	}
+}
+
+ldi Rdest U16 { #U16 SE=0
+	co=010010,
+	nwords=1,
+	Rdest = reg(25,21),
+	U16 = inm(15,0),
+	{
+		(SE=0, OFFSET=0, SIZE=10000, T3=1, LC=1, MR=0, SELC=10101, A0=1, B=1, C0=1)
+	}
+}
+
+ld Rdest (Rorig) {
+            co=010011,
+            nwords=1,
+            Rdest = reg(25,21),
+            Rorig = reg(20,16),
+            {
+                (MR=0, SELA=10000, T9=1, C0),
+                (TA=1, R=1, BW=00, SE=1, M1=1, C1=1),
+                (T1=1, LC=1, MR=0, SELC=10101, SE=1, A0=1, B=1, C=0)
+            }
+}
+
+add_a Rorig {
+	co=011000,
+  nwords=1,
+  Rorig = reg(25,21)
+  {
+    (MR=0, SELA = 10101, T9=1, C4=1)
+    (MR=1, SELB = 100, T10=1, C5=1)
+    (MC=1, MR=1, MA=1, MB=1, SELCOP=1010, T6=1, SELC=100, LC=1, SELP=11, M7, C7, A0=1, B=1, C=0)
+  }
+}
+addi_a S16 {
+  co=011010,
+  nwords=1,
+  S16 = inm(15,0),
+  {
+    (SE=1, OFFSET=0, SIZE=10000, T3=1, C5=1)
+    (MR=1, SELA=100, T9=1, C4=1)
+  	(MC=1, MR=1, MA=1, MB=1, SELCOP=1010, T6=1, SELC=100, LC=1, SELP=11, M7, C7, A0=1, B=1, C=0)
+  }
+}
+inc Rdest{
+  co=011100,
+  nwords=1,
+  Rdest = reg(25,21),
+    {
+      (MC=1, MR=0, SELA=10101, MA=0, MB=11, SELCOP=1010, T6=1, SELC=10101, LC=1, SELP=11, M7, C7, A0=1, B=1, C=0)
+    }
+}
+dec Rdest{
+  co=011101,
+  nwords=1,
+  Rdest = reg(25,21),
+  {
+    (MC=1, MR=0, SELA=10101, MA=0, MB=11, SELCOP=1011, T6=1, SELC=10101, LC=1, SELP=11, M7, C7, A0=1, B=1, C=0)
+  }
+}
+jp S16{
+  co=110000,
+  nwords=1,
+  S16 = inm(15,0),  
+  {
+    (T2=1, C4=1)
+    (SE=1, OFFSET=0, SIZE=10000, T3=1, C5=1)
+  	(MA=1, MB=1, MC=1, SELCOP=1010, T6=1, M2=0, C2=1, SELP=11, M7, C7, A0=1, B=1, C=0)
+	}
+}
+jpz S16{
+  co=110011,
+  nwords=1,
+  S16 = inm(15,0),
+  {
+    ()
+  }
+}
+call U16{
+  co=100001,
+  nwords=1,
+  U16 = inm(15,0),
+  {
+    ()
+  }
+}
+ret{
+  co=100010,
+  nwords=1,
+  {
+    ()
+  }
+}
+halt{
+  co=100011,
+  nwords=1,
+  {
+    ()
+    #SE=0, OFFSET=0, SIZE=0, T3=1, M2=0, C2=1, A0=1, B=1, C=0
+    
+  }
+}
+push Rorig{
+  co=100100,
+  nwords=1,
+  Rorig = reg(25,21),
+  {
+    ()
+  }
+}
+pop Rdest{
+  co=100101,
+  nwords=1,
+  Rdest = reg(25,21),
+  {
+    ()
+  }
+}
+registers
+{
+        4=A,
+        5=BC,
+        6=DE,
+        7=HL,
+        8=IX,
+        9=IY,
+        29=SP (stack_pointer),
+}
+
