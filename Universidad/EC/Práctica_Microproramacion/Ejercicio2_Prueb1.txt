@@ -1,0 +1,170 @@
+{
+  "metadata": {
+    "kernelspec": {
+      "name": "node_nteract",
+      "language": "javascript",
+      "display_name": "Node.js (nteract)"
+    },
+    "kernel_info": {
+      "name": "node_nteract"
+    },
+    "language_info": {
+      "name": "javascript",
+      "version": "8.2.1",
+      "mimetype": "application/javascript",
+      "file_extension": ".js"
+    },
+    "title": "WepSIM 2.0.11",
+    "nteract": {
+      "version": "nteract-on-jupyter@2.0.0"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "source": "## mode",
+      "metadata": {}
+    },
+    {
+      "cell_type": "code",
+      "source": "ep",
+      "outputs": [],
+      "execution_count": 1,
+      "metadata": {
+        "name": "mode",
+        "type": "string",
+        "collapsed": false,
+        "deletable": false,
+        "editable": false
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": "## firmware",
+      "metadata": {}
+    },
+    {
+      "cell_type": "code",
+      "source": "begin {\n\nfetch:\t(T2=1, C0=1),\n\t\t(TA=1, R=1, BW=11, M1=1, C1=1),\n\t\t(M2=1, C2=1, T1=1, C3=1),\n\t\t(A0=1, B=0, C=0)\n}\n\nld Rdest Rorig {\n\tco=010000,\n\tnwords=1,\n\tRdest = reg(25,21),\n\tRorig = reg(20,16),\n\t{\n\t\t(SELA=10000, T9, SELC=10101, LC, A0=1, B=1, C=0)\n\t}\n}\n\nldi Rdest U16 { #U16 SE=0\n\tco=010010,\n\tnwords=1,\n\tRdest = reg(25,21),\n\tU16 = inm(15,0),\n\t{\n\t\t(SE=0, OFFSET=0, SIZE=10000, T3=1, LC=1, MR=0, SELC=10101, A0=1, B=1, C0=1)\n\t}\n}\n\nld Rdest (Rorig) {\n            co=010011,\n            nwords=1,\n            Rdest = reg(25,21),\n            Rorig = reg(20,16),\n            {\n                (MR=0, SELA=10000, T9=1, C0=1),\n                (TA=1, R=1, BW=11, SE=1, M1=1, C1=1),\n                (T1=1, LC=1, MR=0, SELC=10101, SE=1, A0=1, B=1, C=0)\n            }\n}\n\nadd_a Rorig {\n\tco=011000,\n  nwords=1,\n  Rorig = reg(25,21)\n  {\n    (MR=0, SELA = 10101, T9=1, C4=1)\n    (MR=1, SELB = 100, T10=1, C5=1)\n    (MC=1, MR=1, MA=1, MB=1, SELCOP=1010, T6=1, SELC=100, LC=1, SELP=11, M7, C7, A0=1, B=1, C=0)\n  }\n}\naddi_a S16 {\n  co=011010,\n  nwords=1,\n  S16 = inm(15,0),\n  {\n    (SE=1, OFFSET=0, SIZE=10000, T3=1, C5=1)\n    (MR=1, SELA=100, T9=1, C4=1)\n  \t(MC=1, MR=1, MA=1, MB=1, SELCOP=1010, T6=1, SELC=100, LC=1, SELP=11, M7, C7, A0=1, B=1, C=0)\n  }\n}\ninc Rdest{\n  co=011100,\n  nwords=1,\n  Rdest = reg(25,21),\n    {\n      (MC=1, MR=0, SELA=10101, MA=0, MB=11, SELCOP=1010, T6=1, SELC=10101, LC=1, SELP=11, M7, C7, A0=1, B=1, C=0)\n    }\n}\ndec Rdest{\n  co=011101,\n  nwords=1,\n  Rdest = reg(25,21),\n  {\n    (MC=1, MR=0, SELA=10101, MA=0, MB=11, SELCOP=1011, T6=1, SELC=10101, LC=1, SELP=11, M7, C7, A0=1, B=1, C=0)\n  }\n}\njp S16{\n  co=110000,\n  nwords=1,\n  S16 = inm(15,0),  \n  {\n    (T2=1, C4=1)\n    (SE=1, OFFSET=0, SIZE=10000, T3=1, C5=1)\n  \t(MA=1, MB=01, MC=1, SELCOP=1010, T6=1, M2=0, C2=1, A0=1, B=1, C=0)\n\t}\n}\njpz S16{\n  co=110011,\n  nwords=1,\n  S16 = inm(15,0),\n  {\n    (A0=0,B=1,C=110,MADDR=FTCH),\n    (T2=1, C4=1),\n    (SE=1, OFFSET=0, SIZE=10000, T3=1, C5=1),\n  \t(MA=1, MB=01, MC=1, SELCOP=1010, T6=1, M2=0, C2=1),\n  \tFTCH: (A0=1, B=1, C=0),\n    \n  }\n}\ncall U16{\n  co=100001,\n  nwords=1,\n  U16 = inm(15,0),\n  {\n    (MC=1, SELA=11101 MR=1, MA=0, MB=10, SELCOP=1011, T6=1, LC=1, SELC=11101),\n    (T2=1, M1=0, C1=1),\n    (MR=1, SELB=11101, T10=1, C0=1),\n    (TA=1, TD=1, W=1, BW=11),\n    (SE=0, OFFSET=0, SIZE=10000, T3=1, M2=0,C2=1, A0=1, B=1, C=0)\n  }\n}\nret{\n  co=100010,\n  nwords=1,\n  {\n    (MR=1,SELA=11101,T9=1, C0=1, C4=1),\n    (TA=1, R=1, BW=11, SE=1, M1=1, C1=1),\n    (T1=1, M2=0, C2=1),\n    (MC=1, MR=1, MA=1, MB=10, SELCOP=1010, T6=1, LC=1, SELC=11101, A0=1, B=1, C=0)\n  }\n}\nhalt{\n  co=100011,\n  nwords=1,\n  {\n    (EXCODE=0, T11=1, M2=0, C2=1)\n    \n  }\n}\npush Rorig{\n  co=100100,\n  nwords=1,\n  Rorig = reg(25,21),\n  {\n    (MC=1, SELA=11101 MR=1, LC=1, MA=0, MB=10, SELCOP=1011, T6=1, SELC=11101),\n    (MR=0, SELA=10101, T9=1, M1=0, C1=1),\n    (MR=1, SELB=11101, T10=1, C0=1),\n    (TA=1, TD=1, W=1, BW=11, A0=1, B=1, C=0)\n      \n  }\n}\npop Rdest{\n  co=100101,\n  nwords=1,\n  Rdest = reg(25,21),\n  {\n    (MR=1,SELA=11101,T9=1, C0=1, C4=1),\n    (TA=1, R=1, BW=11, SE=1, M1=1, C1=1),\n    (T1=1, LC=1, MR=0, SELC=10101),\n    (MC=1, MR=1, MA=1, MB=10, SELCOP=1010, T6=1, LC=1, SELC=11101, A0=1, B=1, C=0)\n    \n  }\n}\nregisters\n{\n        4=A,\n        5=BC,\n        6=DE,\n        7=HL,\n        8=IX,\n        9=IY,\n        29=SP (stack_pointer),\n}\n\n",
+      "outputs": [],
+      "execution_count": 1,
+      "metadata": {
+        "name": "firmware",
+        "type": "string",
+        "collapsed": false,
+        "deletable": false,
+        "editable": false
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": "## assembly",
+      "metadata": {}
+    },
+    {
+      "cell_type": "code",
+      "source": "\n#\n# WepSIM (https://wepsim.github.io/wepsim/)\n#\n.data\nvector: .word 1,2,3,4,5,6,7,8,9,10\n.text\n accu:  push IX\n \n        ld A (IY)\n        \n        ldi A 0\n        inc IX\n        dec IX\n    b1: jpz f1\n        add_a IX\n        dec IX\n        jp b1\n    f1: ld HL, A\n        pop IX\n        ret\n        \n main: ldi IX 2\n \t\t\t ldi IY vector\n       call accu\n       halt\n\n",
+      "outputs": [],
+      "execution_count": 1,
+      "metadata": {
+        "name": "assembly",
+        "type": "string",
+        "collapsed": false,
+        "deletable": false,
+        "editable": false
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": "## state_current",
+      "metadata": {}
+    },
+    {
+      "cell_type": "code",
+      "source": "{\n  \"time\": 1574954779199,\n  \"title\": \"clock 75 @ &#181;address 0\",\n  \"title_short\": \"clock 75,<br>&#181;add 0\",\n  \"content\": \"register R4 = 0x2; register R8 = 0x1; register R9 = 0x1000; register R29 = 0xffff7; register PC = 0x38; memory 0x1000 = 0x1; memory 0x1004 = 0x2; memory 0x1008 = 0x3; memory 0x100c = 0x4; memory 0x1010 = 0x5; memory 0x1014 = 0x6; memory 0x1018 = 0x7; memory 0x101c = 0x8; memory 0x1020 = 0x9; memory 0x1024 = 0xa; memory 0x8000 = 0x91000000; memory 0x8004 = 0x4c890000; memory 0x8008 = 0x48800000; memory 0x800c = 0x71000000; memory 0x8010 = 0x75000000; memory 0x8014 = 0xcc008024; memory 0x8018 = 0x61000000; memory 0x801c = 0x75000000; memory 0x8020 = 0xc0008014; memory 0x8024 = 0x40e40000; memory 0x8028 = 0x95000000; memory 0x802c = 0x88000000; memory 0x8030 = 0x49000002; memory 0x8034 = 0x49201000; memory 0x8038 = 0x84008000; memory 0x803c = 0x8c000000; memory 0xffff4 = 0x2; memory 0xffff8 = 0x803c; \"\n}",
+      "outputs": [],
+      "execution_count": 1,
+      "metadata": {
+        "name": "state_current",
+        "type": "object",
+        "collapsed": false,
+        "deletable": false,
+        "editable": false
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": "## state_history",
+      "metadata": {}
+    },
+    {
+      "cell_type": "code",
+      "source": "[]",
+      "outputs": [],
+      "execution_count": 1,
+      "metadata": {
+        "name": "state_history",
+        "type": "object",
+        "collapsed": false,
+        "deletable": false,
+        "editable": false
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": "## record",
+      "metadata": {}
+    },
+    {
+      "cell_type": "code",
+      "source": "[]",
+      "outputs": [],
+      "execution_count": 1,
+      "metadata": {
+        "name": "record",
+        "type": "object",
+        "collapsed": false,
+        "deletable": false,
+        "editable": false
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": "## tag",
+      "metadata": {}
+    },
+    {
+      "cell_type": "code",
+      "source": "Thu Nov 28 2019 16:13:45 GMT+0100 (hora estándar de Europa central)",
+      "outputs": [],
+      "execution_count": 1,
+      "metadata": {
+        "name": "tag",
+        "type": "string",
+        "collapsed": false,
+        "deletable": false,
+        "editable": false
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": "## notify",
+      "metadata": {}
+    },
+    {
+      "cell_type": "code",
+      "source": "true",
+      "outputs": [],
+      "execution_count": 1,
+      "metadata": {
+        "name": "notify",
+        "type": "boolean",
+        "collapsed": false,
+        "deletable": false,
+        "editable": false
+      }
+    }
+  ]
+}
