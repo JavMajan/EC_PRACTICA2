@@ -65,7 +65,7 @@
     },
     {
       "cell_type": "code",
-      "source": "\n#\n# WepSIM (https://wepsim.github.io/wepsim/)\n#\n.data\nvector: .word 1,2,3,4,5,6,7,8,9,10\n\n.text\nsumav: #apilar $a0 y $a1\n\tpush IX\n  push IY\n  #HL= suma de los elementos del vector\n  ldi HL 0\nb1: \nmain:\n\tcall sumav\n\n\n##.text\n #accu:  push IX\n \n      #  ld A (IY)\n        \n       # ldi A 0\n       # inc IX\n        #dec IX\n #   b1: jpz f1\n  #      add_a IX\n  #      dec IX\n  #      jp b1\n  #  f1: ld HL, A\n   #     pop IX\n    #    ret\n        \n #main: ldi IX 2\n #\t\t\t ldi IY vector\n  #     call accu\n   #    halt\n\n",
+      "source": "\n#\n# WepSIM (https://wepsim.github.io/wepsim/)\n#\n.data\nvector: .word 1,2,3,4,5,6,7,8,9,10\n\n.text\nsumav: #apilar $a0 y $a1\n\tpush IX\n  push IY\n  #HL= suma de los elementos del vector\n  ldi HL 0\nb1:\nf1: #desapilar $a1 y $a0\n\tpop IY\n  pop IX\n  #return\n  ret\nmain:\n\tldi IX 10\n  ldi IY vector\n  call sumav\n  ldi HL 10\n  halt\n\n\n##.text\n #accu:  push IX\n \n      #  ld A (IY)\n        \n       # ldi A 0\n       # inc IX\n        #dec IX\n #   b1: jpz f1\n  #      add_a IX\n  #      dec IX\n  #      jp b1\n  #  f1: ld HL, A\n   #     pop IX\n    #    ret\n        \n #main: ldi IX 2\n #\t\t\t ldi IY vector\n  #     call accu\n   #    halt\n\n",
       "outputs": [],
       "execution_count": 1,
       "metadata": {
@@ -83,7 +83,7 @@
     },
     {
       "cell_type": "code",
-      "source": "{\n  \"time\": 1575026717188,\n  \"title\": \"clock 36 @ &#181;address 143\",\n  \"title_short\": \"clock 36,<br>&#181;add 143\",\n  \"content\": \"register R29 = 0xffff3; memory 0x1000 = 0x1; memory 0x1004 = 0x2; memory 0x1008 = 0x3; memory 0x100c = 0x4; memory 0x1010 = 0x5; memory 0x1014 = 0x6; memory 0x1018 = 0x7; memory 0x101c = 0x8; memory 0x1020 = 0x9; memory 0x1024 = 0xa; memory 0x8000 = 0x91000000; memory 0x8004 = 0x91200000; memory 0x8008 = 0x48e00000; memory 0x800c = 0x8c000000; memory 0x8010 = 0x84008000; memory 0xffff8 = 0x8014; \"\n}",
+      "source": "{\n  \"time\": 1575068631958,\n  \"title\": \"clock 75 @ &#181;address 143\",\n  \"title_short\": \"clock 75,<br>&#181;add 143\",\n  \"content\": \"register R7 = 0xa; register R8 = 0x1000; register R9 = 0xa; register R29 = 0xfffff; memory 0x1000 = 0x1; memory 0x1004 = 0x2; memory 0x1008 = 0x3; memory 0x100c = 0x4; memory 0x1010 = 0x5; memory 0x1014 = 0x6; memory 0x1018 = 0x7; memory 0x101c = 0x8; memory 0x1020 = 0x9; memory 0x1024 = 0xa; memory 0x8000 = 0x91000000; memory 0x8004 = 0x91200000; memory 0x8008 = 0x48e00000; memory 0x800c = 0x95000000; memory 0x8010 = 0x95200000; memory 0x8014 = 0x88000000; memory 0x8018 = 0x4900000a; memory 0x801c = 0x49201000; memory 0x8020 = 0x84008000; memory 0x8024 = 0x48e0000a; memory 0x8028 = 0x8c000000; memory 0xffff0 = 0x1000; memory 0xffff4 = 0xa; memory 0xffff8 = 0x8024; \"\n}",
       "outputs": [],
       "execution_count": 1,
       "metadata": {
