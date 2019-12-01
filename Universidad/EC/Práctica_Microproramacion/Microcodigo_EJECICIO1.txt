@@ -1,11 +1,3 @@
-begin {
-
-fetch:	(T2=1, C0=1),
-		(TA=1, R=1, BW=11, M1=1, C1=1),
-		(M2=1, C2=1, T1=1, C3=1),
-		(A0=1, B=0, C=0)
-}
-
 ld Rdest Rorig {
 	co=010000,
 	nwords=1,
@@ -85,7 +77,7 @@ dec Rdest{
 jp S16{
   co=110000,
   nwords=1,
-  S16 = inm(15,0),  
+  S16 = address(15,0)rel,  
   {
     (T2=1, C4=1)
     (SE=1, OFFSET=0, SIZE=10000, T3=1, C5=1)
@@ -96,7 +88,7 @@ jp S16{
 jpz S16{
   co=110011,
   nwords=1,
-  S16 = inm(15,0),
+  S16 = address(15,0)rel,
   {
     (A0=0,B=1,C=110,MADDR=FTCH),
     (T2=1, C4=1),
@@ -134,7 +126,7 @@ halt{
   co=100011,
   nwords=1,
   {
-    (EXCODE=0, T11=1, M2=0, C2=1)
+    (EXCODE=0, T11=1, M2=0, C2=1, A0=1, B=1, C=0)
     #Lleva PC a 0
   }
 }
