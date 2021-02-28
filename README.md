@@ -1,2 +1,3 @@
-#Repositiorio lleno dee proyectos personales, si te invito eres de confianza
-#Por favor no toques ni sustrayes nada sin mi permiso
+Segunda práctica de Estructura de Computadores de la carrera de Ingeniería Informática en la UC3M
+Curso 2019/2020
+Para quien lo use, por favor, usalo con cabeza
